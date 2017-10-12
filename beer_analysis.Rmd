@@ -1,0 +1,32 @@
+---
+title: "Beer"
+author: "Bradley Robinson, William Gonzalez"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+## Introduction
+
+## Preparing the data
+
+```{r}
+beers <- read.csv("Beers.csv")
+breweries <- read.csv("Breweries.csv")
+head(beers)
+head(breweries)
+```
+
+### How Many Breweries?
+
+Rank each state by how many breweries they have.
+
+```{r}
+breweries_states <- breweries %>%
+  group_by(State) %>%
+  summarise(Freq = count(State))
+head(breweries_states)
+```
+
