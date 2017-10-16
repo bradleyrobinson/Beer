@@ -24,9 +24,40 @@ head(breweries)
 Rank each state by how many breweries they have.
 
 ```{r}
-breweries_states <- breweries %>%
+breweries_states_count <- breweries %>%
   group_by(State) %>%
-  summarise(Freq = count(State))
-head(breweries_states)
+  summarise(Freq = n())
+state_ordered <- breweries_states_count[order(-breweries_states_count$Freq),]
+head(state_ordered, n = 10)
+```
+
+
+```{r}
+names(breweries) <- c("Brewery_id", "Brewery_Name", "City", "State")
+combined <- merge(beers, breweries, by = c("Brewery_id")) 
+head(combined)
+tail(combined)
+```
+TODO: Report number of NAs in each column
+```{r}
+
+```
+
+```{r}
+beers_summarized <- combined %>%
+  group_by(State) %>%
+  summarise(median_abv = median(ABV, na.rm = TRUE),
+          median_ibu = median(IBU, na.rm = TRUE))
+beers_summarized
+```
+
+# TODO: Which state has the max ABV? Which has the most bitter (IBU)?
+```{r}
+
+```
+
+### ABV Summary Statistics
+```{r}
+
 ```
 
