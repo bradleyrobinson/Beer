@@ -10,8 +10,10 @@ library(tidyverse)
 ```
 ## Introduction
 
-## Preparing the data
+Within the United States, beer is a popular adult beverage, but tastes can vary by area. When making decisions about the type of beer to sell in a particular area, there are some statistics that make it possible to know what beers are already available in these states. While looking at many of the chemical properties of a particular product might be difficult, alcholol content and bitterness are simple measures that tell a lot about a brew.
 
+## Preparing the data
+For this analysis, there are two datasets that will be used. The first included a list of beers and information about them. The second is a list of breweries (with IDs that correspond with the first) and information about where they are. After reading in the data, the first six rows of each dataset look like this:
 ```{r}
 beers <- read.csv("Beers.csv")
 breweries <- read.csv("Breweries.csv")
@@ -21,7 +23,7 @@ head(breweries)
 
 ### How Many Breweries?
 
-Rank each state by how many breweries they have.
+Each state can be ranked by how many breweries there are.
 
 ```{r}
 breweries_states_count <- breweries %>%
@@ -31,7 +33,7 @@ state_ordered <- breweries_states_count[order(-breweries_states_count$Freq),]
 head(state_ordered, n = 10)
 ```
 
-
+Both datasets are combined so that it is possible to observe how beer differs between each state, and to see what beers might be available.
 ```{r}
 names(breweries) <- c("Brewery_id", "Brewery_Name", "City", "State")
 combined <- merge(beers, breweries, by = c("Brewery_id")) 
@@ -43,6 +45,7 @@ TODO: Report number of NAs in each column
 
 ```
 
+By looking at the median alcohol by volume, we can compare states by how much alcohol there is in each drink.
 ```{r}
 beers_summarized <- combined %>%
   group_by(State) %>%
@@ -51,13 +54,15 @@ beers_summarized <- combined %>%
 beers_summarized
 ```
 
-# TODO: Which state has the max ABV? Which has the most bitter (IBU)?
+### TODO: Which state has the max ABV? Which has the most bitter (IBU)?
 ```{r}
 
 ```
 
 ### ABV Summary Statistics
 ```{r}
-
+summary(combined$ABV)
+ggplot(data = combined) +
+  geom_histogram(mapping = aes(ABV))
 ```
 
