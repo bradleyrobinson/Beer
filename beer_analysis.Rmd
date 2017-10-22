@@ -5,7 +5,7 @@ date: "Due: October 23, 2017"
 output: html_document
 ---
 
-```{r setup, include=TRUE}
+```{r setup, include=FALSE, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggplot2)
@@ -21,15 +21,15 @@ beers <- read.csv("./Data/Beers.csv")
 breweries <- read.csv("./Data/Breweries.csv")
 head(beers)
 head(breweries)
-merged<-merge.data.frame(breweries,beers, by.x = "Brew_ID", by.y = "Brewery_id", all)
 ```
+##### The data is read in from csv files and displayed using the head function.
+
 ### Questions of Interest
 
 #### How many breweries are present in each state??
 
 Each state can be ranked by how many breweries there are.
 
-Answer: (answer here)
 ```{r}
 breweries_states_count <- breweries %>%
   group_by(State) %>%
@@ -37,19 +37,23 @@ breweries_states_count <- breweries %>%
 state_ordered <- breweries_states_count[order(-breweries_states_count$Freq),]
 head(state_ordered, n = 10)
 ```
-###### Code explanation
+###### First, the data was grouped by state, then the amount of entries in each state were counted. The data was sorted and the displayed.
 
-Both datasets are combined so that it is possible to observe how beer differs between each state, and to see what beers might be available.
+Perhaps unsurprisingly, many of the states with large amounts of breweries are known for having cultural interests in beer.
+
+#### Combining Datasets
+
+Both datasets can be combined so that it is possible to observe how beer differs between each state, and to see what beers might be available in each state without having to look between two datasets.
 ```{r}
 names(breweries) <- c("Brewery_id", "Brewery_Name", "City", "State")
 merged <- merge(beers, breweries, by = c("Brewery_id")) 
 head(merged)
 tail(merged)
 ```
-###### Code explanation 
+###### Using a simple merge command, the data was put together by brewery ID.
 
-#### Question 3: Report the number of NA's in each column. (William)
-Answer: From analyzing the data, it looks like the columns with missing values are AVB (62 missing) and IBU (1005 missing). 
+#### Is there missing data?
+From analyzing the data, it looks like the columns with missing values are AVB (62 missing) and IBU (1005 missing). 
 ```{r}
 colSums(is.na(merged))
 ```
@@ -62,12 +66,33 @@ beers_summarized <- merged %>%
   group_by(State) %>%
   summarise(median_abv = median(ABV, na.rm = TRUE),
           median_ibu = median(IBU, na.rm = TRUE))
-beers_summarized
+head(beers_summarized, n = 10)
 ```
-###### Code explanation
+###### Data was grouped by state again, and then the medians of ABV and IBU were taken for each state.
+```{r, fig.width=10, fig.height=17}
+ggplot(data = beers_summarized) +
+  geom_col(mapping = aes(x=State, y=median_abv), fill="blue") +
+  labs(title="Median ABV In Each State") +
+  coord_flip() +
+  ylab("Median ABV")
+```
+```{r, fig.width=10, fig.height=17}
+ggplot(data = beers_summarized) +
+  geom_col(mapping = aes(x=State, y=median_ibu), fill="blue") +
+  labs(title="Median IBU For Each State") +
+  coord_flip() +
+  ylab("Median IBU")
+```
+Using the above graphs, states can be compared based on median IBU and median ABV. They can also be arranged in order to see which have the strongest drinks:
+```{r}
+by_abv <- beers_summarized[order(-beers_summarized$median_abv),]
+head(by_abv)
+tail(by_abv)
+```
+It appears that Utah has the lowest median alcohol content, which probably is due to a law that prevents beers with ABV greater than 3.2% to be sold in grocery stores.
  
 
-#### Question 5: Which state has the maximum alcoholic (ABV) beer? Which state has the most bitter (IBU) beer? (William)
+#### Which state has the maximum alcoholic (ABV) beer? Which state has the most bitter (IBU) beer?
 Answer: The state has the maximum alcoholic (ABV) beer is Colorado with an ABV of 0.128.</br> 
 The state has the most bitter (IBU) beer is Oregon with an IBU of 138. 
 ```{r}
@@ -80,16 +105,21 @@ max(merged$IBU, na.rm = TRUE)
 ###### The second and fourth lines of code find the actual value. </br>
  
 
-#### Question 6: Summary statistics for the ABV variable. (Brad)
-Answer: (answer here)
+#### Summary statistics for the ABV variable.
+We can see a summary of statistics for ABV in the dataset:
 ```{r}
-summary(combined$ABV)
-ggplot(data = combined) +
-  geom_histogram(mapping = aes(ABV))
+summary(merged$ABV)
 ```
-###### Code explanation
+It appears that most content amounts center around .056. Using a histogram, we can visualize the same thing:
+```{r}
+ggplot(data = merged) +
+  geom_histogram(mapping = aes(ABV), fill = "darkblue") + 
+  labs(title="Histogram of ABV", y="Frequency")
+```
+This also shows that there are less beers that have contents below the center of distribution (mean) than there are that have more than.
+###### Data was summarized using the summary function, and graphed with ggplot.
 
-#### Question 7: Is there an apparent relationship between the bitterness of the beer and its alcoholic content? Draw a scatter plot. (William)
+#### Is there an apparent relationship between the bitterness of the beer and its alcoholic content? 
 Answer: Judging from the data, there appears to be a very mild positive linear correlation between the Bitterness (IBU) vs Alcohol Content (ABV). 
 ```{r}
 ggplot(merged, aes(x=IBU, y=ABV,na.rm=FALSE)) + geom_point() + geom_smooth(method=lm) + labs(title="Scatterplot of Bitterness (IBU) vs Alcohol Content (ABV)") + theme_classic() 
@@ -97,7 +127,9 @@ ggplot(merged, aes(x=IBU, y=ABV,na.rm=FALSE)) + geom_point() + geom_smooth(metho
 
 ###### Using function ggplot to find the relationship between the bitterness of the beer and its alcoholic content. The resulting scatterplot shows a very mild positive correlation between those two values.  
 
-### Conclusion (William)
+### Conclusion
 
-At the customer request, we analyzed and merged data from two datasets, [Beers.csv](./Data/Beers.csv) and [Breweries.csv](./Data/Breweries.csv).  
-After preparing the data and running some analysis, we ansered the customer's questions of interest above and prepared this report. Although this was not part of the original customer request,and since there are many different types of craft beers in the USA, we also provided a reference chart summarizing the beer type an and the count of that type made by USA breweries. This info can be found in the file: [beer-types.csv](./Data/beer-types.csv).    
+At the customer's request, we analyzed and merged data from two datasets, [Beers.csv](./Data/Beers.csv) and [Breweries.csv](./Data/Breweries.csv).  
+After preparing the data and running some analysis, we answered the customer's questions of interest above and prepared this report. Although this was not part of the original customer request, and since there are many different types of craft beers in the USA, we also provided a reference chart summarizing the beer type an and the count of that type made by USA breweries. This info can be found in the file: [beer-types.csv](./Data/beer-types.csv).
+
+This repository can be found: https://github.com/bradleyrobinson/Beer.
