@@ -7,38 +7,46 @@ output: html_document
 
 ```{r setup, include=TRUE}
 knitr::opts_chunk$set(echo = TRUE)
-##library(tidyverse)
+library(tidyverse)
 library(ggplot2)
 ```
-
-### Introduction (Brad)
-Introduction text goes here 
+### Introduction
+Within the United States, beer is a popular adult beverage, but tastes can vary by area. When making decisions about the type of beer to sell in a particular area, there are some statistics that make it possible to know what beers are already available in these states. While looking at many of the chemical properties of a particular product might be difficult, alcholol content and bitterness are simple measures that tell a lot about a brew.
 
 ### Preparing the data
-The first step is to prepare the data to be processed in R by loading and merging the datasets
+The first step is to prepare the data to be processed in R by loading and merging the datasets. For this analysis, there are two datasets that will be used. The first included a list of beers and information about them. The second is a list of breweries (with IDs that correspond with the first) and information about where they are. After reading in the data, the first six rows of each dataset look like this:
+
 ```{r}
 beers <- read.csv("./Data/Beers.csv")
 breweries <- read.csv("./Data/Breweries.csv")
+head(beers)
+head(breweries)
 merged<-merge.data.frame(breweries,beers, by.x = "Brew_ID", by.y = "Brewery_id", all)
 ```
-
 ### Questions of Interest
-</br>
 
-#### Question 1: How many breweries are present in each state? (Brad)
+#### How many breweries are present in each state??
+
+Each state can be ranked by how many breweries there are.
+
 Answer: (answer here)
 ```{r}
+breweries_states_count <- breweries %>%
+  group_by(State) %>%
+  summarise(Freq = n())
+state_ordered <- breweries_states_count[order(-breweries_states_count$Freq),]
+head(state_ordered, n = 10)
 ```
 ###### Code explanation
-*** 
 
-#### Question 2: Merge beer data with the breweries data. Print the first 6 observations and the last six observations to check the merged file. (Brad)
-NOTE: brad please use the name "merged" since I refer to it on subsequent steps. also you can delete the "merge" statement in the preparing data section (redundant)
-Answer: (answer here)
+Both datasets are combined so that it is possible to observe how beer differs between each state, and to see what beers might be available.
 ```{r}
+names(breweries) <- c("Brewery_id", "Brewery_Name", "City", "State")
+merged <- merge(beers, breweries, by = c("Brewery_id")) 
+head(merged)
+tail(merged)
 ```
-###### Code explanation
-*** 
+###### Code explanation 
 
 #### Question 3: Report the number of NA's in each column. (William)
 Answer: From analyzing the data, it looks like the columns with missing values are AVB (62 missing) and IBU (1005 missing). 
@@ -46,14 +54,18 @@ Answer: From analyzing the data, it looks like the columns with missing values a
 colSums(is.na(merged))
 ```
 ###### This piece of code counts the number of NA values of the merged dataframe. 
-*** 
 
-#### Question 4: Compute the median alcohol content and international bitterness unit for each state. Plot a bar chart to compare. (Brad)
-Answer: (answer here)
+#### Alcohol contents by volume.
+By looking at the median alcohol by volume, we can compare states by how much alcohol there is in each drink.
 ```{r}
+beers_summarized <- merged %>%
+  group_by(State) %>%
+  summarise(median_abv = median(ABV, na.rm = TRUE),
+          median_ibu = median(IBU, na.rm = TRUE))
+beers_summarized
 ```
 ###### Code explanation
-*** 
+ 
 
 #### Question 5: Which state has the maximum alcoholic (ABV) beer? Which state has the most bitter (IBU) beer? (William)
 Answer: The state has the maximum alcoholic (ABV) beer is Colorado with an ABV of 0.128.</br> 
@@ -66,14 +78,16 @@ max(merged$IBU, na.rm = TRUE)
 ```
 ###### The first and third lines of code find the State for the highest ABV and IBU respectively. </br>
 ###### The second and fourth lines of code find the actual value. </br>
-*** 
+ 
 
 #### Question 6: Summary statistics for the ABV variable. (Brad)
 Answer: (answer here)
 ```{r}
+summary(combined$ABV)
+ggplot(data = combined) +
+  geom_histogram(mapping = aes(ABV))
 ```
 ###### Code explanation
-*** 
 
 #### Question 7: Is there an apparent relationship between the bitterness of the beer and its alcoholic content? Draw a scatter plot. (William)
 Answer: Judging from the data, there appears to be a very mild positive linear correlation between the Bitterness (IBU) vs Alcohol Content (ABV). 
@@ -82,7 +96,6 @@ ggplot(merged, aes(x=IBU, y=ABV,na.rm=FALSE)) + geom_point() + geom_smooth(metho
 ```
 
 ###### Using function ggplot to find the relationship between the bitterness of the beer and its alcoholic content. The resulting scatterplot shows a very mild positive correlation between those two values.  
-*** 
 
 ### Conclusion (William)
 
