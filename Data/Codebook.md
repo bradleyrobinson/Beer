@@ -34,10 +34,9 @@ Data Set Characteristics: It is a comma separated value (csv) file using 24 kb o
 Number of Rows, Columns: 
 558 rows, 4 columns.
 
-Column Characteristics: 
-
 Missing Values? 
 None
+
 Attribute Name | Brief Description | Attribute Range
 1. Brew_ID | The numerical ID of the brewery. | Integer value from 1 to 558
 2. Brewery_Name | Name of the brewery | Character
