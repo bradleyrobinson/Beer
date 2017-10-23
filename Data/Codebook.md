@@ -25,18 +25,22 @@ Attribute Name | Brief Description | Attribute Range
 
 
 
-#### [Breweries.csv](./Breweries.csv) (to be completed by Brad)
+#### [Breweries.csv](./Breweries.csv)
 
-Description: 
+Description: A dataset that includes a list of information of craft breweries throughout the United States.
 
-Data Set Characteristics: 
+Data Set Characteristics: It is a comma separated value (csv) file using 24 kb of memory.
 
 Number of Rows, Columns: 
+558 rows, 4 columns.
 
 Column Characteristics: 
 
 Missing Values? 
-
-Attribute Information:
-Attribute: Attribute Range 
+None
+Attribute Name | Brief Description | Attribute Range
+1. Brew_ID | The numerical ID of the brewery. | Integer value from 1 to 558
+2. Brewery_Name | Name of the brewery | Character
+3. City | City where the brewery is located | Character
+4. State | State where the brewery is located | Character
 

@@ -1,7 +1,7 @@
 ---
 title: "Beer Analysis"
 author: "Bradley Robinson, William Gonzalez"
-date: "Due: October 23, 2017"
+date: "October 23, 2017"
 output: html_document
 ---
 
@@ -93,8 +93,8 @@ It appears that Utah has the lowest median alcohol content, which probably is du
  
 
 #### Which state has the maximum alcoholic (ABV) beer? Which state has the most bitter (IBU) beer?
-Answer: The state has the maximum alcoholic (ABV) beer is Colorado with an ABV of 0.128.</br> 
-The state has the most bitter (IBU) beer is Oregon with an IBU of 138. 
+The state that has the maximum alcoholic (ABV) beer is Colorado with an ABV of 0.128.</br> 
+The state that has the most bitter (IBU) beer is Oregon with an IBU of 138. 
 ```{r}
 merged$State[which.max(merged$ABV)]
 max(merged$ABV, na.rm = TRUE)
@@ -116,8 +116,8 @@ ggplot(data = merged) +
   geom_histogram(mapping = aes(ABV), fill = "darkblue") + 
   labs(title="Histogram of ABV", y="Frequency")
 ```
-This also shows that there are less beers that have contents below the center of distribution (mean).
 ###### Data was summarized using the summary function, and graphed with ggplot.
+This also shows that there are less beers that have contents below the center of distribution (mean).
 
 #### Is there an apparent relationship between the bitterness of the beer and its alcoholic content? 
 Answer: Judging from the data, there appears to be a very mild positive linear correlation between the Bitterness (IBU) vs Alcohol Content (ABV). 
